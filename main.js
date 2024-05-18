@@ -36,14 +36,13 @@ const logOut = document.getElementById('logOut');
 const errBody = document.getElementById('errBody');
 
 // Redirect Functions
-const allowedPages = ['/login.html', '/signup.html'];
 async function redirectToHomeIfLoggedIn(user) {
   if (user && window.location.pathname === '/login.html') {
     window.location.href = 'index.html';
   }
- 
+  const allowedPages = ['/login.html', '/signup.html'];
   if (user && allowedPages.includes(window.location.pathname) === googleSignIn) {
-    await signOut(auth);
+    // await signOut(auth);
     setTimeout(() => {
       // Redirect to Home page after successful sign-in
       window.location.href = 'index.html';
@@ -52,6 +51,7 @@ async function redirectToHomeIfLoggedIn(user) {
 }
 
 async function redirectToLoginIfNotLoggedIn(user) {
+  const allowedPages = ['/login.html', '/signup.html'];
   if (!user && !allowedPages.includes(window.location.pathname)) {
     window.location.href = 'login.html';
   }
