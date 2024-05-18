@@ -283,7 +283,7 @@ async function googleSignIn() {
     setTimeout(() => {
       showErrorMessage('Redirecting to Home...', '#28a745');
       // Redirect to home page after showing the message
-        window.location.href = 'index.html';
+      window.location.href = 'index.html';
     }, 3000);
     const user = result.user;
     await setDoc(doc(db, 'users', user.uid), {
