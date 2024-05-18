@@ -40,6 +40,12 @@ function redirectToHomeIfLoggedIn(user) {
   if (user && window.location.pathname === '/login.html') {
     window.location.href = 'index.html';
   }
+  if (user === googleContinueButton) {
+    setTimeout(() => {
+      // Redirect to Home page after successful sign-in
+      window.location.href = 'index.html';
+    }, 3000);
+  }
 }
 
 async function redirectToLoginIfNotLoggedIn(user) {
@@ -62,7 +68,7 @@ onAuthStateChanged(auth, async (user) => {
   redirectToLoginIfNotLoggedIn(user);
 
   if (user) {
-    console.log('logged in');
+    console.log('Logged in');
     showLogInMessage('Login successful!', '#28a745');
     const userData = await fetchUserData(user.uid);
     if (userData) {
@@ -290,6 +296,7 @@ async function googleSignIn() {
       lastLogin: serverTimestamp(),
       email: user.email
     }, { merge: true });
+    window.location.href = 'index.html';
   } catch (error) {
     showErrorMessage(error.message, '#ff0000');
   }
