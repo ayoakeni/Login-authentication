@@ -36,21 +36,22 @@ const logOut = document.getElementById('logOut');
 const errBody = document.getElementById('errBody');
 
 // Redirect Functions
+const allowedPages = ['/login.html', '/signup.html'];
 async function redirectToHomeIfLoggedIn(user) {
   if (user && window.location.pathname === '/login.html') {
     window.location.href = 'index.html';
   }
-  if (user && window.location.pathname === '/signup.html' && googleSignIn) {
+ 
+  if (user && allowedPages.includes(window.location.pathname) === googleSignIn) {
     await signOut(auth);
     setTimeout(() => {
-      // Redirect to login page after successful sign-out
+      // Redirect to Home page after successful sign-in
       window.location.href = 'index.html';
     }, 3000);
   }
 }
 
 async function redirectToLoginIfNotLoggedIn(user) {
-  const allowedPages = ['/login.html', '/signup.html']; 
   if (!user && !allowedPages.includes(window.location.pathname)) {
     window.location.href = 'login.html';
   }
