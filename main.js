@@ -47,13 +47,6 @@ async function redirectToLoginIfNotLoggedIn(user) {
   if (!user && !allowedPages.includes(window.location.pathname)) {
     window.location.href = 'login.html';
   }
-  if (user && window.location.pathname === '/signup.html') {
-    await signOut(auth);
-    setTimeout(() => {
-      // Redirect to login page after successful sign-out
-      window.location.href = 'login.html';
-    }, 3000);
-  }
 }
 
 // Authentication State
