@@ -57,7 +57,7 @@ async function redirectToLoginIfNotLoggedIn(user) {
     await signOut(auth);
     setTimeout(() => {
       // Redirect to login page after successful sign-out
-      window.location.href = 'login.htm';
+      window.location.href = 'login.html';
     }, 3000);
   }
 }
