@@ -36,9 +36,16 @@ const logOut = document.getElementById('logOut');
 const errBody = document.getElementById('errBody');
 
 // Redirect Functions
-function redirectToHomeIfLoggedIn(user) {
+async function redirectToHomeIfLoggedIn(user) {
   if (user && window.location.pathname === '/login.html') {
     window.location.href = 'index.html';
+  }
+  if (user && window.location.pathname === '/signup.html' && googleSignIn) {
+    await signOut(auth);
+    setTimeout(() => {
+      // Redirect to login page after successful sign-out
+      window.location.href = 'index.html';
+    }, 3000);
   }
 }
 
