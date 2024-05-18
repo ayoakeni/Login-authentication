@@ -1,6 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { initializeFirestore, doc, setDoc, getDoc, serverTimestamp} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { initializeFirestore, doc, setDoc, getDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBunVgeXF3xLLst1Dhi7sAx9yBCtnqK284",
@@ -39,12 +39,6 @@ const errBody = document.getElementById('errBody');
 function redirectToHomeIfLoggedIn(user) {
   if (user && window.location.pathname === '/login.html') {
     window.location.href = 'index.html';
-  }
-  if (user === googleContinueButton) {
-    setTimeout(() => {
-      // Redirect to Home page after successful sign-in
-      window.location.href = 'index.html';
-    }, 3000);
   }
 }
 
@@ -261,15 +255,16 @@ async function signup() {
   }
   try {
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-    showErrorMessage('Sign up successful!', '#28a745');
-    setTimeout(() => {
-      showErrorMessage('Redirecting to log in...', '#28a745');    
-    }, 3000);
     const user = userCredential.user;
     await setDoc(doc(db, 'users', user.uid), {
       signupDate: serverTimestamp(),
       email: email
     });
+    showErrorMessage('Sign up successful! Redirecting to log in...', '#28a745');
+    setTimeout(async () => {
+      await signOut(auth);
+      window.location.href = 'login.html';
+    }, 3000);
   } catch (error) {
     showErrorMessage(error.message, '#ff0000');
   }
@@ -284,33 +279,17 @@ async function googleSignIn() {
   const provider = new GoogleAuthProvider();
   try {
     const result = await signInWithPopup(auth, provider);
-    showErrorMessage('Google sign-in successful!', '#28a745');
-    setTimeout(() => {
-      showErrorMessage('Redirecting to Home...', '#28a745');    
-    }, 3000);
     const user = result.user;
     await setDoc(doc(db, 'users', user.uid), {
       lastLogin: serverTimestamp(),
       email: user.email
     }, { merge: true });
-    window.location.href = 'index.html';
+    showErrorMessage('Google sign-in successful!', '#28a745');
+    setTimeout(() => {
+      // Redirect to Home page after successful sign-in
+      window.location.href = 'index.html';
+    }, 3000); // 3 seconds delay before redirecting
   } catch (error) {
     showErrorMessage(error.message, '#ff0000');
   }
 }
-
-// Hiding .html Extension
-document.addEventListener("DOMContentLoaded", () => {
-  const links = document.querySelectorAll("a");
-  links.forEach((link) => {
-    const href = link.getAttribute("href");
-    if (href && href.endsWith(".html")) {
-      link.dataset.originalHref = href;
-      link.setAttribute("href", href.slice(0, -5));
-      link.addEventListener("click", (event) => {
-        event.preventDefault();
-        window.location.href = link.dataset.originalHref;
-      });
-    }
-  });
-});
