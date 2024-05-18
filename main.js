@@ -40,8 +40,11 @@ function redirectToHomeIfLoggedIn(user) {
   if (user && window.location.pathname === '/login.html') {
     window.location.href = 'index.html';
   }
-  if (user === googleSignIn()) {
-    window.location.href = 'index.html';
+  if (user === googleContinueButton) {
+    setTimeout(() => {
+      // Redirect to Home page after successful sign-in
+      window.location.href = 'index.html';
+    }, 3000);
   }
 }
 
