@@ -62,6 +62,7 @@ onAuthStateChanged(auth, async (user) => {
   redirectToLoginIfNotLoggedIn(user);
 
   if (user) {
+    console.log('logged in');
     showLogInMessage('Login successful!', '#28a745');
     const userData = await fetchUserData(user.uid);
     if (userData) {
@@ -280,14 +281,17 @@ async function googleSignIn() {
     const result = await signInWithPopup(auth, provider);
     showErrorMessage('Google sign-in successful!', '#28a745');
     setTimeout(() => {
-      showErrorMessage('Redirecting to Home...', '#28a745');    
+      showErrorMessage('Redirecting to Home...', '#28a745');
+      // Redirect to home page after showing the message
+      setTimeout(() => {
+        window.location.href = 'index.html';
+      }, 3000); // Redirect after an additional delay
     }, 3000);
     const user = result.user;
     await setDoc(doc(db, 'users', user.uid), {
       lastLogin: serverTimestamp(),
       email: user.email
     }, { merge: true });
-    window.location.href = 'index.html';
   } catch (error) {
     showErrorMessage(error.message, '#ff0000');
   }
