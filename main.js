@@ -13,7 +13,10 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-const db = initializeFirestore(app, { useFetchStreams: false });
+const db = initializeFirestore(app, {
+  useFetchStreams: false,
+  cacheSizeBytes: -1 // Unlimiting the cache size
+});
 
 // Elements
 const emailInput = document.getElementById('email');
@@ -39,10 +42,17 @@ function redirectToHomeIfLoggedIn(user) {
   }
 }
 
-function redirectToLoginIfNotLoggedIn(user) {
+async function redirectToLoginIfNotLoggedIn(user) {
   const allowedPages = ['/login.html', '/signup.html']; 
   if (!user && !allowedPages.includes(window.location.pathname)) {
     window.location.href = 'login.html';
+  }
+  if (user && window.location.pathname === '/signup.html') {
+    await signOut(auth);
+    setTimeout(() => {
+      // Redirect to login page after successful sign-out
+      window.location.href = 'login.html';
+    }, 3000);
   }
 }
 
@@ -55,9 +65,13 @@ onAuthStateChanged(auth, async (user) => {
     showLogInMessage('Login successful!', '#28a745');
     const userData = await fetchUserData(user.uid);
     if (userData) {
-      userEmail.textContent = userData.email;
+      if (userEmail) {
+        userEmail.textContent = userData.email;
+      }
     } else {
-      userEmail.textContent = 'No User.';
+      if (userEmail) {
+        userEmail.textContent = 'No User.';
+      }
       showLogInMessage('Unable to fetch your data.', '#ff0000');
     }
   }
@@ -235,12 +249,14 @@ async function signup() {
   try {
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
     showErrorMessage('Sign up successful!', '#28a745');
+    setTimeout(() => {
+      showErrorMessage('Redirecting to log in...', '#28a745');    
+    }, 3000);
     const user = userCredential.user;
     await setDoc(doc(db, 'users', user.uid), {
       signupDate: serverTimestamp(),
       email: email
     });
-    window.location.href = 'index.html';
   } catch (error) {
     showErrorMessage(error.message, '#ff0000');
   }
