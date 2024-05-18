@@ -40,6 +40,9 @@ function redirectToHomeIfLoggedIn(user) {
   if (user && window.location.pathname === '/login.html') {
     window.location.href = 'index.html';
   }
+  if (user === googleSignIn()) {
+    window.location.href = 'index.html';
+  }
 }
 
 async function redirectToLoginIfNotLoggedIn(user) {
@@ -279,6 +282,9 @@ async function googleSignIn() {
   try {
     const result = await signInWithPopup(auth, provider);
     showErrorMessage('Google sign-in successful!', '#28a745');
+    setTimeout(() => {
+      showErrorMessage('Redirecting to Home...', '#28a745');    
+    }, 3000);
     const user = result.user;
     await setDoc(doc(db, 'users', user.uid), {
       lastLogin: serverTimestamp(),
