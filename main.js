@@ -40,12 +40,12 @@ function redirectToHomeIfLoggedIn(user) {
   if (user && window.location.pathname === '/login.html') {
     window.location.href = 'index.html';
   }
-  if (user === googleContinueButton) {
-    setTimeout(() => {
-      // Redirect to Home page after successful sign-in
-      window.location.href = 'index.html';
-    }, 3000);
-  }
+  // if (user === googleContinueButton) {
+  //   setTimeout(() => {
+  //     // Redirect to Home page after successful sign-in
+  //     window.location.href = 'index.html';
+  //   }, 3000);
+  // }
 }
 
 async function redirectToLoginIfNotLoggedIn(user) {
@@ -57,7 +57,7 @@ async function redirectToLoginIfNotLoggedIn(user) {
     await signOut(auth);
     setTimeout(() => {
       // Redirect to login page after successful sign-out
-      window.location.href = 'login.html';
+      window.location.href = 'login.htm';
     }, 3000);
   }
 }
