@@ -166,10 +166,17 @@ function addEnterKeyListener(input, handler) {
 
 if (emailInput) {
   addEnterKeyListener(emailInput, login);
+  emailInput.addEventListener('input', clearValidationMessage);
 }
 
 if (passwordInput) {
   addEnterKeyListener(passwordInput, login);
+  passwordInput.addEventListener('input', clearValidationMessage);
+}
+
+// Clear Validation Message
+function clearValidationMessage() {
+  message.textContent = '';
 }
 
 // Password Visibility Toggle
