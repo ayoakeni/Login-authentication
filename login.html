@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  </head>
+  <body>
+    <div class="container">
+      <h2>Login</h2>
+      <button id="googleContinueButton">Sign in with Google <img class="g-icon" src="google.png"></button>
+      <form id="authForm">
+        <input type="email" id="email" placeholder="Email" autocomplete="current-password" required>
+        <div class="pass-box">
+          <input type="password" id="password" placeholder="Password" autocomplete="current-password" required>
+          <div class="eye-box" id="eye-box">
+            <i class="fa-regular fa-eye-slash" id="eyeSlash"></i>
+            <i class="fa-regular fa-eye" id="eye"></i>
+          </div>
+        </div>
+      </form>
+      <button type="button" id="loginButton">Login</button>
+      <p id="message"></p>
+      <div class="text">
+        <span>Don't have an account?</span>
+        <a href="signup.html">Sign Up</a>
+      </div>
+    </div>
+    <div id="errBody">
+      <p id="errorAuth"></p>
+      <p id="logOut"></p>
+    </div>
+    <script src="main.js" type="module"></script>
+  </body>
+</html>
