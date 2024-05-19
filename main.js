@@ -37,9 +37,9 @@ const errBody = document.getElementById('errBody');
 
 // Redirect Functions
 function redirectToHomeIfLoggedIn(user) {
-  if (user && window.location.pathname === '/login.html') {
-    window.location.href = 'index.html';
-  }
+  // if (user && window.location.pathname === '/login.html') {
+  //   window.location.href = 'index.html';
+  // }
   // if (user === googleContinueButton) {
   //   setTimeout(() => {
   //     // Redirect to Home page after successful sign-in
