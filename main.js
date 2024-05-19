@@ -65,7 +65,7 @@ async function redirectToLoginIfNotLoggedIn(user) {
 // Authentication State
 onAuthStateChanged(auth, async (user) => {
   redirectToHomeIfLoggedIn(user);
-  redirectToLoginIfNotLoggedIn(user);
+ await redirectToLoginIfNotLoggedIn(user);
 
   if (user) {
     console.log('Logged in');
