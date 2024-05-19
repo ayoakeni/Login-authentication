@@ -35,16 +35,17 @@ const logIn = document.getElementById('logIn');
 const logOut = document.getElementById('logOut');
 const errBody = document.getElementById('errBody');
 
-// Redirect Functions
 function redirectToHomeIfLoggedIn(user) {
   if (user && window.location.pathname === '/login.html') {
+    console.log('Redirecting to home page from login.');
     window.location.href = 'index.html';
   }
 }
 
 async function redirectToLoginIfNotLoggedIn(user) {
-  const allowedPages = ['/login.html', '/signup.html']; 
+  const allowedPages = ['/login.html', '/signup.html'];
   if (!user && !allowedPages.includes(window.location.pathname)) {
+    console.log('User not logged in, redirecting to login page.');
     if (!sessionStorage.getItem('redirecting')) {
       sessionStorage.setItem('redirecting', 'true');
       window.location.href = 'login.html';
@@ -52,20 +53,29 @@ async function redirectToLoginIfNotLoggedIn(user) {
   } else {
     sessionStorage.removeItem('redirecting');
   }
+}
+
+async function redirectToLoginAfterSignup(user) {
   if (user && window.location.pathname === '/signup.html') {
+    console.log('Signing out user and redirecting to login from signup.');
     await signOut(auth);
+    showErrorMessage('Redirecting to login...', '#28a745');
     setTimeout(() => {
-      showErrorMessage('Redirecting to log in...', '#28a745');
-      // Redirect to login page after successful sign-out
-      window.location.href = 'login.html';  
+      window.location.href = 'login.html';
     }, 3000);
   }
 }
 
 // Authentication State
 onAuthStateChanged(auth, async (user) => {
-  redirectToHomeIfLoggedIn(user);
-  redirectToLoginIfNotLoggedIn(user);
+  // Apply redirection logic based on the current page
+  if (window.location.pathname === '/signup.html') {
+    await redirectToLoginAfterSignup(user);
+  } else if (window.location.pathname === '/login.html') {
+    redirectToHomeIfLoggedIn(user);
+  } else {
+    await redirectToLoginIfNotLoggedIn(user);
+  }
 
   if (user) {
     console.log('Logged in');
