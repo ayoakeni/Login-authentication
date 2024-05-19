@@ -35,33 +35,21 @@ const logIn = document.getElementById('logIn');
 const logOut = document.getElementById('logOut');
 const errBody = document.getElementById('errBody');
 
-// Redirect Functions
 function redirectToHomeIfLoggedIn(user) {
-  console.log('Checking if user is logged in for redirect to home:', user);
   if (user && window.location.pathname === '/login.html') {
-    console.log('Redirecting to home page from login.');
     window.location.href = 'index.html';
   }
 }
 
 async function redirectToLoginIfNotLoggedIn(user) {
-  console.log('Checking if user is not logged in for redirect to login:', user);
   const allowedPages = ['/login.html', '/signup.html'];
   if (!user && !allowedPages.includes(window.location.pathname)) {
-    if (!sessionStorage.getItem('redirecting')) {
-      console.log('User not logged in, redirecting to login page.');
-      sessionStorage.setItem('redirecting', 'true');
-      window.location.href = 'login.html';
-    }
-  } else {
-    sessionStorage.removeItem('redirecting');
+    window.location.href = 'login.html';
   }
 }
 
 async function redirectToLoginAfterSignup(user) {
-  console.log('Checking if user is on signup page for redirect to login:', user);
   if (user && window.location.pathname === '/signup.html') {
-    console.log('Signing out user and redirecting to login from signup.');
     await signOut(auth);
     showErrorMessage('Redirecting to login...', '#28a745');
     setTimeout(() => {
