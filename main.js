@@ -35,6 +35,7 @@ const logIn = document.getElementById('logIn');
 const logOut = document.getElementById('logOut');
 const errBody = document.getElementById('errBody');
 
+// Redirect Functions
 function redirectToHomeIfLoggedIn(user) {
   if (user && window.location.pathname === '/login.html') {
     window.location.href = 'index.html';
@@ -42,33 +43,29 @@ function redirectToHomeIfLoggedIn(user) {
 }
 
 async function redirectToLoginIfNotLoggedIn(user) {
-  const allowedPages = ['/login.html', '/signup.html'];
+  const allowedPages = ['/login.html', '/signup.html']; 
   if (!user && !allowedPages.includes(window.location.pathname)) {
-    window.location.href = 'login.html';
+    if (!sessionStorage.getItem('redirecting')) {
+      sessionStorage.setItem('redirecting', 'true');
+      window.location.href = 'login.html';
+    }
+  } else {
+    sessionStorage.removeItem('redirecting');
   }
-}
-
-async function redirectToLoginAfterSignup(user) {
   if (user && window.location.pathname === '/signup.html') {
     await signOut(auth);
-    showErrorMessage('Redirecting to login...', '#28a745');
     setTimeout(() => {
-      window.location.href = 'login.html';
+      showErrorMessage('Redirecting to log in...', '#28a745');
+      // Redirect to login page after successful sign-out
+      window.location.href = 'login.html';  
     }, 3000);
   }
 }
 
 // Authentication State
 onAuthStateChanged(auth, async (user) => {
-  console.log('Auth state changed:', user);
-  // Ensure the correct redirection logic is applied in order
-  if (window.location.pathname === '/login.html') {
-    redirectToHomeIfLoggedIn(user);
-  } else if (window.location.pathname === '/signup.html') {
-    await redirectToLoginAfterSignup(user);
-  } else {
-    await redirectToLoginIfNotLoggedIn(user);
-  }
+  redirectToHomeIfLoggedIn(user);
+  redirectToLoginIfNotLoggedIn(user);
 
   if (user) {
     console.log('Logged in');
