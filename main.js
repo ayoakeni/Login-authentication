@@ -223,12 +223,12 @@ async function login() {
   }
   try {
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
+    window.location.href = 'index.html';
     const user = userCredential.user;
     await setDoc(doc(db, 'users', user.uid), {
       lastLogin: serverTimestamp(),
       email: email
     }, { merge: true });
-    window.location.href = 'index.html';
   } catch (error) {
     showErrorMessage(error.message, '#ff0000');
   }
