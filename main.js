@@ -42,7 +42,7 @@ function redirectToHomeIfLoggedIn(user) {
   // }
 }
 
-async function redirectToLoginIfNotLoggedIn(user) {
+function redirectToLoginIfNotLoggedIn(user) {
   const allowedPages = ['/login.html', '/signup.html']; 
   if (!user && !allowedPages.includes(window.location.pathname)) {
     window.location.href = 'login.html';
