@@ -42,10 +42,18 @@ function redirectToHomeIfLoggedIn(user) {
   // }
 }
 
-function redirectToLoginIfNotLoggedIn(user) {
+async function redirectToLoginIfNotLoggedIn(user) {
   const allowedPages = ['/login.html', '/signup.html']; 
   if (!user && !allowedPages.includes(window.location.pathname)) {
     window.location.href = 'login.html';
+  }
+  if (user && window.location.pathname === '/signup.html') {
+    await signOut(auth);
+    setTimeout(() => {
+      showErrorMessage('Redirecting to log in...', '#28a745');
+      // Redirect to login page after successful sign-out
+      window.location.href = 'login.html';  
+    }, 3000);
   }
 }
 
@@ -250,12 +258,6 @@ async function signup() {
   try {
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
     showErrorMessage('Sign up successful!', '#28a745');
-    await signOut(auth);
-    setTimeout(() => {
-      showErrorMessage('Redirecting to log in...', '#28a745');
-      // Redirect to login page after successful sign-out
-      window.location.href = 'login.html';  
-    }, 3000);
     const user = userCredential.user;
     await setDoc(doc(db, 'users', user.uid), {
       signupDate: serverTimestamp(),
