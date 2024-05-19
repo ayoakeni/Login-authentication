@@ -44,19 +44,13 @@ function redirectToHomeIfLoggedIn(user) {
 
 async function redirectToLoginIfNotLoggedIn(user) {
   const allowedPages = ['/login.html', '/signup.html']; 
-  // if (!user && !allowedPages.includes(window.location.pathname)) {
-  //   if (!sessionStorage.getItem('redirecting')) {
-  //     sessionStorage.setItem('redirecting', 'true');
-  //     window.location.href = 'login.html';
-  //   }
-  // } else {
-  //   sessionStorage.removeItem('redirecting');
-  // }
-  // if (!user && window.location.pathname === '/index.html') {
-  //   window.location.href = 'login.html';
-  // }
-  if (!user && !'/login.html'.includes(window.location.pathname)) {
-    window.location.href = 'login.html';
+  if (!user && !allowedPages.includes(window.location.pathname)) {
+    if (sessionStorage.getItem('redirecting')) {
+      sessionStorage.setItem('redirecting', 'true');
+      window.location.href = 'login.html';
+    }
+  } else {
+    sessionStorage.removeItem('redirecting');
   }
   if (user && window.location.pathname === '/signup.html') {
     await signOut(auth);
@@ -71,7 +65,7 @@ async function redirectToLoginIfNotLoggedIn(user) {
 // Authentication State
 onAuthStateChanged(auth, async (user) => {
   redirectToHomeIfLoggedIn(user);
- await redirectToLoginIfNotLoggedIn(user);
+  redirectToLoginIfNotLoggedIn(user);
 
   if (user) {
     console.log('Logged in');
