@@ -296,7 +296,7 @@ async function googleSignIn() {
       lastLogin: serverTimestamp(),
       email: user.email
     }, { merge: true });
-    window.location.href = 'index.html';
+    window.location.href = 'login.html';
   } catch (error) {
     showErrorMessage(error.message, '#ff0000');
   }
