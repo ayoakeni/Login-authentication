@@ -294,7 +294,7 @@ async function googleSignIn() {
     setTimeout(() => {
       showErrorMessage('Redirecting to Home...', '#28a745');
       // Redirect to home page after showing the message
-      window.location.href = 'login.html';
+      window.location.href = 'index.html';
     }, 3000);
   } catch (error) {
     showErrorMessage(error.message, '#ff0000');
