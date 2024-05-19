@@ -42,9 +42,8 @@ function redirectToHomeIfLoggedIn(user) {
   }
 }
 
-function redirectToLoginIfNotLoggedIn(user) {
+async function redirectToLoginIfNotLoggedIn(user) {
   const allowedPages = ['/login.html', '/signup.html'];
-  
   if (!user && !allowedPages.includes(window.location.pathname)) {
     if (!sessionStorage.getItem('redirecting')) {
       sessionStorage.setItem('redirecting', 'true');
@@ -55,7 +54,7 @@ function redirectToLoginIfNotLoggedIn(user) {
   }
 }
 
-async function handleSignupRedirection(user) {
+async function redirectToLoginAfterSignup(user) {
   if (user && window.location.pathname === '/signup.html') {
     await signOut(auth);
     showErrorMessage('Redirecting to login...', '#28a745');
@@ -65,12 +64,12 @@ async function handleSignupRedirection(user) {
   }
 }
 
-
 // Authentication State
 onAuthStateChanged(auth, async (user) => {
+  // Handle redirecting based on the user's authentication state
   redirectToHomeIfLoggedIn(user);
-  redirectToLoginIfNotLoggedIn(user);
-  handleSignupRedirection(user)
+  await redirectToLoginIfNotLoggedIn(user);
+  await redirectToLoginAfterSignup(user);
 
   if (user) {
     console.log('Logged in');
