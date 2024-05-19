@@ -52,7 +52,10 @@ async function redirectToLoginIfNotLoggedIn(user) {
   // } else {
   //   sessionStorage.removeItem('redirecting');
   // }
-  if (!user && window.location.pathname === '/index.html') {
+  // if (!user && window.location.pathname === '/index.html') {
+  //   window.location.href = 'login.html';
+  // }
+  if (!user && !'/login.html'.includes(window.location.pathname)) {
     window.location.href = 'login.html';
   }
   if (user && window.location.pathname === '/signup.html') {
