@@ -285,17 +285,17 @@ async function googleSignIn() {
   const provider = new GoogleAuthProvider();
   try {
     const result = await signInWithPopup(auth, provider);
-    const user = result.user;
-    await setDoc(doc(db, 'users', user.uid), {
-      lastLogin: serverTimestamp(),
-      email: user.email
-    }, { merge: true });
     showErrorMessage('Google sign-in successful!', '#28a745');
     setTimeout(() => {
       showErrorMessage('Redirecting to Home...', '#28a745');
       // Redirect to home page after showing the message
       window.location.href = 'index.html';
     }, 3000);
+    const user = result.user;
+    await setDoc(doc(db, 'users', user.uid), {
+      lastLogin: serverTimestamp(),
+      email: user.email
+    }, { merge: true });
   } catch (error) {
     showErrorMessage(error.message, '#ff0000');
   }
