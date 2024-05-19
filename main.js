@@ -66,10 +66,14 @@ async function redirectToLoginAfterSignup(user) {
 
 // Authentication State
 onAuthStateChanged(auth, async (user) => {
-  // Handle redirecting based on the user's authentication state
-  redirectToHomeIfLoggedIn(user);
-  await redirectToLoginIfNotLoggedIn(user);
-  await redirectToLoginAfterSignup(user);
+  // Ensure the correct redirection logic is applied in order
+  if (window.location.pathname === '/login.html') {
+    redirectToHomeIfLoggedIn(user);
+  } else if (window.location.pathname === '/signup.html') {
+    await redirectToLoginAfterSignup(user);
+  } else {
+    await redirectToLoginIfNotLoggedIn(user);
+  }
 
   if (user) {
     console.log('Logged in');
