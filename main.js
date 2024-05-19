@@ -37,9 +37,9 @@ const errBody = document.getElementById('errBody');
 
 // Redirect Functions
 function redirectToHomeIfLoggedIn(user) {
-  // if (user && window.location.pathname === '/login.html') {
-  //   window.location.href = 'index.html';
-  // }
+  if (user && window.location.pathname === '/login.html') {
+    window.location.href = 'index.html';
+  }
 }
 
 async function redirectToLoginIfNotLoggedIn(user) {
@@ -218,7 +218,6 @@ async function login() {
   }
   try {
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
-    window.location.href = 'index.html';
     const user = userCredential.user;
     await setDoc(doc(db, 'users', user.uid), {
       lastLogin: serverTimestamp(),
