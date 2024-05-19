@@ -68,6 +68,7 @@ async function redirectToLoginAfterSignup(user) {
 
 // Authentication State
 onAuthStateChanged(auth, async (user) => {
+  console.log('Auth state changed:', user);
   // Apply redirection logic based on the current page
   if (window.location.pathname === '/signup.html') {
     await redirectToLoginAfterSignup(user);
