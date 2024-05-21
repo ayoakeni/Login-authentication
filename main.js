@@ -36,15 +36,14 @@ const logOut = document.getElementById('logOut');
 const errBody = document.getElementById('errBody');
 
 // Redirect Functions
-async function redirectToHomeIfLoggedIn(user) {
+function redirectToHomeIfLoggedIn(user) {
   if (user && window.location.pathname === '/login.html') {
     window.location.href = 'index.html';
   }
 }
 
-const allowedPages = ['/login.html', '/signup.html', '/'];
-
-function handleAuthStateChange(user) {
+function redirectToLoginIfOnArestrictedArea(user) {
+  const allowedPages = ['/login.html', '/signup.html', '/'];
   const currentPath = window.location.pathname;
   
   if (!user && !allowedPages.includes(currentPath)) {
@@ -52,12 +51,7 @@ function handleAuthStateChange(user) {
   }
 }
 
-async function redirectToLoginIfNotLoggedIn(user) {
-  // const allowedPages = ['/login.html', '/signup.html'];
-  // if (!user && !allowedPages.includes(window.location.pathname)) {
-  //   window.location.href = 'login.html';
-  // }
-
+async function redirectToLoginIfSignedUp(user) {
   if (user && window.location.pathname === '/signup.html') {
     try {
       await signOut(auth);
@@ -73,10 +67,10 @@ async function redirectToLoginIfNotLoggedIn(user) {
 
 // Authentication State
 onAuthStateChanged(auth, async (user) => {
-  redirectToHomeIfLoggedIn(user);
-  redirectToLoginIfNotLoggedIn(user);
   console.log('Current Path:', window.location.pathname);
-  handleAuthStateChange(user);
+  redirectToHomeIfLoggedIn(user);
+  redirectToLoginIfSignedUp(user);
+  redirectToLoginIfOnArestrictedArea(user);
 
   if (user) {
     console.log('Logged in');
