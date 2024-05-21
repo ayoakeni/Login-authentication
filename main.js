@@ -42,11 +42,21 @@ async function redirectToHomeIfLoggedIn(user) {
   }
 }
 
-async function redirectToLoginIfNotLoggedIn(user) {
-  const allowedPages = ['/login.html', '/signup.html'];
-  if (!user && !allowedPages.includes(window.location.pathname)) {
+const allowedPages = ['/login.html', '/signup.html', '/'];
+
+function handleAuthStateChange(user) {
+  const currentPath = window.location.pathname;
+  
+  if (!user && !allowedPages.includes(currentPath)) {
     window.location.href = 'login.html';
   }
+}
+
+async function redirectToLoginIfNotLoggedIn(user) {
+  // const allowedPages = ['/login.html', '/signup.html'];
+  // if (!user && !allowedPages.includes(window.location.pathname)) {
+  //   window.location.href = 'login.html';
+  // }
 
   if (user && window.location.pathname === '/signup.html') {
     try {
@@ -65,6 +75,8 @@ async function redirectToLoginIfNotLoggedIn(user) {
 onAuthStateChanged(auth, async (user) => {
   redirectToHomeIfLoggedIn(user);
   redirectToLoginIfNotLoggedIn(user);
+  console.log('Current Path:', window.location.pathname);
+  handleAuthStateChange(user);
 
   if (user) {
     console.log('Logged in');
