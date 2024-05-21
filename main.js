@@ -43,7 +43,8 @@ function redirectToHomeIfLoggedIn(user) {
 }
 
 function redirectToLoginIfOnArestrictedArea(user) {
-  const allowedPages = ['/login.html', '/signup.html', '/'];
+  // const allowedPages = ['/login.html', '/signup.html', '/'];
+  const allowedPages = ['/Login-authentication/login.html', '/Login-authentication/signup.html', '/Login-authentication/'];
   const currentPath = window.location.pathname;
   
   if (!user && !allowedPages.includes(currentPath)) {
