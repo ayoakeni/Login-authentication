@@ -44,10 +44,10 @@ function redirectToHomeIfLoggedIn(user) {
 
 async function redirectToLoginIfNotLoggedIn(user) {
   const allowedPages = ['/login.html', '/signup.html'];
-  if (!allowedPages.includes(window.location.pathname) && !user) {
+  if (!user && !allowedPages.includes(window.location.pathname)) {
     window.location.href = 'login.html';
   }
-
+  
   if (user && window.location.pathname === '/signup.html') {
     await signOut(auth);
     setTimeout(() => {
