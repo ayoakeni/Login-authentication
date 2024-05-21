@@ -1,6 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { initializeFirestore, doc, setDoc, getDoc, serverTimestamp} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { initializeFirestore, CACHE_SIZE_UNLIMITED, doc, setDoc, getDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBunVgeXF3xLLst1Dhi7sAx9yBCtnqK284",
@@ -15,7 +15,7 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = initializeFirestore(app, {
   useFetchStreams: false,
-  cacheSizeBytes: -1 // Unlimiting the cache size
+  cacheSizeBytes: CACHE_SIZE_UNLIMITED
 });
 
 // Elements
@@ -36,7 +36,7 @@ const logOut = document.getElementById('logOut');
 const errBody = document.getElementById('errBody');
 
 // Redirect Functions
-function redirectToHomeIfLoggedIn(user) {
+async function redirectToHomeIfLoggedIn(user) {
   if (user && window.location.pathname === '/login.html') {
     window.location.href = 'index.html';
   }
@@ -47,14 +47,17 @@ async function redirectToLoginIfNotLoggedIn(user) {
   if (!user && !allowedPages.includes(window.location.pathname)) {
     window.location.href = 'login.html';
   }
-  
+
   if (user && window.location.pathname === '/signup.html') {
-    await signOut(auth);
-    setTimeout(() => {
-      showErrorMessage('Redirecting to log in...', '#28a745');
-      // Redirect to login page after successful sign-out
-      window.location.href = 'login.html';  
-    }, 3000);
+    try {
+      await signOut(auth);
+      setTimeout(() => {
+        showErrorMessage('Redirecting to log in...', '#28a745');
+        window.location.href = 'login.html';
+      }, 3000);
+    } catch (error) {
+      showErrorMessage('Error signing out. Please try again.', '#ff0000');
+    }
   }
 }
 
@@ -65,7 +68,7 @@ onAuthStateChanged(auth, async (user) => {
 
   if (user) {
     console.log('Logged in');
-    showLogInMessage('Login successful!', '#28a745');
+    if (logIn) showLogInMessage('Login successful!', '#28a745');
     const userData = await fetchUserData(user.uid);
     if (userData) {
       if (userEmail) {
@@ -75,7 +78,7 @@ onAuthStateChanged(auth, async (user) => {
       if (userEmail) {
         userEmail.textContent = 'No User.';
       }
-      showLogInMessage('Unable to fetch your data.', '#ff0000');
+      if (logIn) showLogInMessage('Unable to fetch your data.', '#ff0000');
     }
   }
 });
@@ -93,7 +96,6 @@ async function fetchUserData(userId) {
     }
   } catch (error) {
     console.error('Error fetching user document:', error);
-    // Retry fetching the document Data
     setTimeout(async () => {
       try {
         userDoc = await getDoc(userDocRef);
@@ -131,24 +133,28 @@ function validateForm(email, password) {
 
 // Display Messages
 function showMessage(text, color) {
-  message.textContent = text;
-  message.style.color = color;
+  if (message) {
+    message.textContent = text;
+    message.style.color = color;
+  }
 }
 
 function showErrorMessage(text, color) {
-  errorAuth.textContent = text;
-  errorAuth.style.color = color;
-  errBody.style.display = 'flex';
-  if (logOut) {
-    logOut.style.display = 'none';
+  if (errorAuth && errBody) {
+    errorAuth.textContent = text;
+    errorAuth.style.color = color;
+    errBody.style.display = 'flex';
+    if (logOut) {
+      logOut.style.display = 'none';
+    }
+    setTimeout(() => {
+      errBody.style.display = 'none';
+    }, 3000);
   }
-  setTimeout(() => {
-    errBody.style.display = 'none';
-  }, 3000);
 }
 
 function showLogInMessage(text, color) {
-  if (logIn) {
+  if (logIn && errBody) {
     logIn.textContent = text;
     logIn.style.color = color;
     errBody.style.display = 'flex';
@@ -159,6 +165,14 @@ function showLogInMessage(text, color) {
 }
 
 // Event Listeners for Enter Key
+const inputs = [emailInput, passwordInput];
+inputs.forEach(input => {
+  if (input) {
+    addEnterKeyListener(input, login);
+    input.addEventListener('input', clearValidationMessage);
+  }
+});
+
 function addEnterKeyListener(input, handler) {
   input.addEventListener('keydown', (event) => {
     if (event.key === 'Enter') {
@@ -167,19 +181,11 @@ function addEnterKeyListener(input, handler) {
   });
 }
 
-if (emailInput) {
-  addEnterKeyListener(emailInput, login);
-  emailInput.addEventListener('input', clearValidationMessage);
-}
-
-if (passwordInput) {
-  addEnterKeyListener(passwordInput, login);
-  passwordInput.addEventListener('input', clearValidationMessage);
-}
-
 // Clear Validation Message
 function clearValidationMessage() {
-  message.textContent = '';
+  if (message) {
+    message.textContent = '';
+  }
 }
 
 // Password Visibility Toggle
@@ -280,14 +286,16 @@ async function googleSignIn() {
     showErrorMessage('Google sign-in successful!', '#28a745');
     setTimeout(() => {
       showErrorMessage('Redirecting to Home...', '#28a745');
-      // Redirect to home page after showing the message
-      window.location.href = 'index.html';
-    }, 3000);
+    }, 1000);
     const user = result.user;
-    await setDoc(doc(db, 'users', user.uid), {
-      lastLogin: serverTimestamp(),
-      email: user.email
-    }, { merge: true });
+    const userDocRef = doc(db, 'users', user.uid);
+    const userDoc = await getDoc(userDocRef);
+    if (!userDoc.exists()) {
+      await setDoc(userDocRef, {
+        signupDate: serverTimestamp(),
+        email: user.email
+      });
+    }
   } catch (error) {
     showErrorMessage(error.message, '#ff0000');
   }
