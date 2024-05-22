@@ -49,7 +49,7 @@ function redirectToLoginIfOnArestrictedArea(user) {
   let pathParts = fullPath.split('/');
   let lastPath = pathParts[pathParts.length - 1];
   
-  if (!user && !allowedPages.includes('/',lastPath)) {
+  if (!user && !allowedPages.includes(lastPath)) {
     window.location.href = 'login.html';
   }
 }
