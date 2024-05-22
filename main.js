@@ -40,7 +40,6 @@ let fullPath = window.location.pathname;
 // Split the path by '/' and get the last part
 let pathParts = fullPath.split('/');
 let lastPath = '/' + pathParts[pathParts.length - 1];
-console.log(lastPath)
 
 function redirectToHomeIfLoggedIn(user) {
   if (user && lastPath === '/login.html') {
