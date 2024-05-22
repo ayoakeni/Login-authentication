@@ -50,7 +50,7 @@ function redirectToLoginIfOnArestrictedArea(user) {
   let lastPath = pathParts[pathParts.length - 1];
   console.log(lastPath)
   
-  if (!user && !allowedPages.includes(fullPath)) {
+  if (!user && !allowedPages.includes('/' + lastPath)) {
     window.location.href = 'login.html';
   }
 }
@@ -71,7 +71,6 @@ async function redirectToLoginIfSignedUp(user) {
 
 // Authentication State
 onAuthStateChanged(auth, async (user) => {
-  console.log('Current Path:', window.location.pathname);
   redirectToHomeIfLoggedIn(user);
   redirectToLoginIfSignedUp(user);
   redirectToLoginIfOnArestrictedArea(user);
