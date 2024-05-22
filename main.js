@@ -38,7 +38,7 @@ const errBody = document.getElementById('errBody');
 // Redirect Functions
 function redirectToHomeIfLoggedIn(user) {
   if (user && window.location.pathname === '/login.html') {
-    window.location.href = 'index.html';
+    window.location.href = '/index.html';
   }
 }
 
