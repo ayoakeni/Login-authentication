@@ -56,7 +56,7 @@ function redirectToHomeIfLoggedIn(user) {
 }
 
 function redirectToLoginIfOnRestrictedArea(user) {
-  const allowedPages = ['/login.html', '/signup.html','/forgotten.html','/change_password.html'];
+  const allowedPages = ['/login.html', '/signup.html','/forgotten.html'];
   if (!user && !allowedPages.includes(lastPath)) {
     window.location.href = 'login.html';
   }
