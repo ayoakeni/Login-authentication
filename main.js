@@ -85,9 +85,9 @@ onAuthStateChanged(auth, async (user) => {
   if (user) {
     console.log('Logged in');
     if (logIn) showLogInMessage('Login successful!', '#28a745');
-    const FuD = await fetchUserData(user.uid); // Fetch and display user data here
-    if (FuD) {
-      await fetchUserData(user.uid);
+    const userData = await fetchUserData(user.uid); // Fetch and display user data here
+    if (userData) {
+      displayUserData(userData);
     } else {
       userInfo.textContent = 'No user data found.';
       if (logIn) showLogInMessage('Unable to fetch your data.', '#ff0000');
@@ -102,8 +102,7 @@ async function fetchUserData(userId) {
   try {
     userDoc = await getDoc(userDocRef);
     if (userDoc.exists()) {
-      const userData = userDoc.data();
-      displayUserData(userData);
+      return userDoc.data();
     }
   } catch (error) {
     console.error('Error fetching user document:', error);
@@ -111,8 +110,7 @@ async function fetchUserData(userId) {
       try {
         userDoc = await getDoc(userDocRef);
         if (userDoc.exists()) {
-          const userData = userDoc.data();
-          displayUserData(userData);
+          return userDoc.data();
         }
       } catch (retryError) {
         console.error('Retry failed:', retryError);
