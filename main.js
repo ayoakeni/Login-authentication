@@ -106,17 +106,21 @@ async function fetchUserData(userId) {
     }
   } catch (error) {
     console.error('Error fetching user document:', error);
-    setTimeout(async () => {
-      try {
-        userDoc = await getDoc(userDocRef);
-        if (userDoc.exists()) {
-          return userDoc.data();
+    if (error.code === 'unavailable') {
+      showLogInMessage('You are offline. Please check your internet connection.', '#ff0000');
+    } else {
+      setTimeout(async () => {
+        try {
+          userDoc = await getDoc(userDocRef);
+          if (userDoc.exists()) {
+            return userDoc.data();
+          }
+        } catch (retryError) {
+          console.error('Retry failed:', retryError);
+          showLogInMessage('Try logging out and logging in again.', '#ff0000');
         }
-      } catch (retryError) {
-        console.error('Retry failed:', retryError);
-        showLogInMessage('Try logging out and logging in again.', '#ff0000');
-      }
-    }, 3000);
+      }, 3000);
+    }
   }
   return null;
 }
@@ -132,6 +136,15 @@ function displayUserData(userData) {
     userDataElement.textContent += `, Last Login: ${new Date(userData.lastLogin.seconds * 1000).toLocaleString()}`;
   }
 }
+
+// Network Status Notifications
+window.addEventListener('offline', () => {
+  showLogInMessage('You are currently offline. Some features may not be available.', '#ff0000');
+});
+
+window.addEventListener('online', () => {
+  showLogInMessage('You are back online.', '#28a745');
+});
 
 // Form Validation
 function validateForm(email, password) {
