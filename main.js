@@ -269,30 +269,29 @@ if (changePasswordButton) {
     const confirmPassword = confirmPasswordInput.value;
 
     if (newPassword !== confirmPassword) {
-      changePasswordMessage.textContent = 'Passwords do not match.';
-      changePasswordMessage.style.color = '#ff0000';
+      showMessage('Passwords do not match.', '#ff0000');
       return;
     }
 
     if (newPassword.length < 6) {
-      changePasswordMessage.textContent = 'Password should be at least 6 characters.';
-      changePasswordMessage.style.color = '#ff0000';
+      showMessage('Password should be at least 6 characters.', '#ff0000');
       return;
     }
 
     if (actionCode) {
       confirmPasswordReset(auth, actionCode, newPassword)
         .then(() => {
-          changePasswordMessage.textContent = 'Password has been changed successfully!';
-          changePasswordMessage.style.color = '#28a745';
+          showErrorMessage('Password has been changed successfully!', '#28a745');
+          setTimeout(() => {
+            showErrorMessage('Redirecting to log in...', '#28a745');
+            window.location.href = 'login.html';
+          }, 3000);
         })
         .catch((error) => {
-          changePasswordMessage.textContent = error.message;
-          changePasswordMessage.style.color = '#ff0000';
+          showErrorMessage(error.message, '#ff0000');
         });
     } else {
-      changePasswordMessage.textContent = 'Invalid or expired action code.';
-      changePasswordMessage.style.color = '#ff0000';
+      showMessage('Invalid or expired action code.', '#ff0000');
     }
   });
 }
