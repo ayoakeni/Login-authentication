@@ -106,7 +106,7 @@ h2 {
 }
 
 /* Account */
-.account h2 {
+.home h2 {
   font-size: 30px;
   margin-bottom: 20px;
 }
@@ -115,7 +115,7 @@ h2 {
   font-weight: bold;
   margin: 0 !important;
 }
-.user span{
+#userData{
   font-size: 18px;
   color: #28a745;
 }

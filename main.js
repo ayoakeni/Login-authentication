@@ -28,7 +28,7 @@ const message = document.getElementById('message');
 const eyeBox = document.getElementById('eye-box');
 const eyeSlash = document.getElementById('eyeSlash');
 const eye = document.getElementById('eye');
-const userEmail = document.getElementById('userEmail');
+const userData = document.getElementById('userData');
 const logoutButton = document.getElementById('logoutButton');
 const errorAuth = document.getElementById('errorAuth');
 const logIn = document.getElementById('logIn');
@@ -77,17 +77,7 @@ onAuthStateChanged(auth, async (user) => {
   if (user) {
     console.log('Logged in');
     if (logIn) showLogInMessage('Login successful!', '#28a745');
-    const userData = await fetchUserData(user.uid);
-    if (userData) {
-      if (userEmail) {
-        userEmail.textContent = userData.email;
-      }
-    } else {
-      if (userEmail) {
-        userEmail.textContent = 'No User.';
-      }
-      if (logIn) showLogInMessage('Unable to fetch your data.', '#ff0000');
-    }
+    await fetchUserData(user.uid); // Fetch and display user data here
   }
 });
 
@@ -98,9 +88,19 @@ async function fetchUserData(userId) {
   try {
     userDoc = await getDoc(userDocRef);
     if (userDoc.exists()) {
-      return userDoc.data();
+      const userData = userDoc.data();
+      const userDataElement = document.getElementById('userData');
+      userDataElement.textContent = `Email: ${userData.email}`;
+      if (userData.signupDate) {
+        userDataElement.textContent += `, Signup Date: ${new Date(userData.signupDate.seconds * 1000).toLocaleString()}`;
+      }
+      if (userData.lastLogin) {
+        userDataElement.textContent += `, Last Login: ${new Date(userData.lastLogin.seconds * 1000).toLocaleString()}`;
+      }
     } else {
       console.log('No such document!');
+      userData.textContent = 'No user data found.';
+      if (logIn) showLogInMessage('Unable to fetch your data.', '#ff0000');
     }
   } catch (error) {
     console.error('Error fetching user document:', error);
@@ -108,9 +108,18 @@ async function fetchUserData(userId) {
       try {
         userDoc = await getDoc(userDocRef);
         if (userDoc.exists()) {
-          return userDoc.data();
+          const userData = userDoc.data();
+          const userDataElement = document.getElementById('userData');
+          userDataElement.textContent = `Email: ${userData.email}`;
+          if (userData.signupDate) {
+            userDataElement.textContent += `, Signup Date: ${new Date(userData.signupDate.seconds * 1000).toLocaleString()}`;
+          }
+          if (userData.lastLogin) {
+            userDataElement.textContent += `, Last Login: ${new Date(userData.lastLogin.seconds * 1000).toLocaleString()}`;
+          }
         } else {
           console.log('No such document!');
+          userData.textContent = 'No user data found.';
         }
       } catch (retryError) {
         console.error('Retry failed:', retryError);
