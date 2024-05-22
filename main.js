@@ -89,14 +89,7 @@ async function fetchUserData(userId) {
     userDoc = await getDoc(userDocRef);
     if (userDoc.exists()) {
       const userData = userDoc.data();
-      const userDataElement = userInfo;
-      userDataElement.textContent = `Email: ${userData.email}`;
-      if (userData.signupDate) {
-        userDataElement.textContent += `, Signup Date: ${new Date(userData.signupDate.seconds * 1000).toLocaleString()}`;
-      }
-      if (userData.lastLogin) {
-        userDataElement.textContent += `, Last Login: ${new Date(userData.lastLogin.seconds * 1000).toLocaleString()}`;
-      }
+      displayUserData(userData);
     } else {
       console.log('No such document!');
       userInfo.textContent = 'No user data found.';
@@ -109,14 +102,7 @@ async function fetchUserData(userId) {
         userDoc = await getDoc(userDocRef);
         if (userDoc.exists()) {
           const userData = userDoc.data();
-          const userDataElement = document.getElementById('userData');
-          userDataElement.textContent = `Email: ${userData.email}`;
-          if (userData.signupDate) {
-            userDataElement.textContent += `, Signup Date: ${new Date(userData.signupDate.seconds * 1000).toLocaleString()}`;
-          }
-          if (userData.lastLogin) {
-            userDataElement.textContent += `, Last Login: ${new Date(userData.lastLogin.seconds * 1000).toLocaleString()}`;
-          }
+          displayUserData(userData);
         } else {
           console.log('No such document!');
           userInfo.textContent = 'No user data found.';
@@ -128,6 +114,18 @@ async function fetchUserData(userId) {
     }, 3000);
   }
   return null;
+}
+
+// Display User Data
+function displayUserData(userData) {
+  const userDataElement = userInfo; // Assuming userInfo is the element to display user data
+  userDataElement.textContent = `Email: ${userData.email}`;
+  if (userData.signupDate) {
+    userDataElement.textContent += `, Signup Date: ${new Date(userData.signupDate.seconds * 1000).toLocaleString()}`;
+  }
+  if (userData.lastLogin) {
+    userDataElement.textContent += `, Last Login: ${new Date(userData.lastLogin.seconds * 1000).toLocaleString()}`;
+  }
 }
 
 // Form Validation
