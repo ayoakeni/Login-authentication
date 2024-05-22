@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forgotten Page</title>
+    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  </head>
+  <body>
+    <div class="container">
+      <h2>Forgotten Password</h2>
+      <form id="authForm">
+        <input type="email" id="email" placeholder="Email" autocomplete="current-password" required>
+      </form>
+      <button type="button" id="resetButton">Reset password</button>
+      <p id="message"></p>
+      <div class="text">
+        <a href="login.html">Back to login</a>
+      </div>
+    </div>
+    <div id="errBody">
+      <p id="errorAuth"></p>
+      <p id="logOut"></p>
+    </div>
+    <script src="main.js" type="module"></script>
+  </body>
+</html>

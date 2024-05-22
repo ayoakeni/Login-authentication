@@ -20,6 +20,7 @@ body {
 }
 h2 {
   text-align: center;
+  padding-bottom: 20px;
 }
 #googleContinueButton{
   display: flex;
@@ -33,7 +34,7 @@ h2 {
   background-color: lightgray;
   color: white;
   cursor: pointer;
-  margin: 20px 0;
+  margin: 0 0 20px;
   transition: all 0.3s;
 }
 #googleContinueButton:hover{
@@ -42,12 +43,16 @@ h2 {
 .g-icon{
   width: 20px;
 }
+.container form{
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
 .container input[type="email"] {
   display: block;
   width: 100%;
   height: 43px;
   outline-color: #28a745;
-  margin-bottom: 20px;
   padding: 10px;
   border-radius: 5px;
   border: 1px solid #ccc;
@@ -76,6 +81,15 @@ h2 {
 }
 #eyeSlash{
   display: none;
+}
+.forgot{
+  width: 100%;
+  margin-bottom: 20px;
+  text-align: center;
+}
+.forgot a{
+  color: #ff0000;
+  cursor: pointer;
 }
 .container button {
   width: 100%;

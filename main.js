@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, sendPasswordResetEmail, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 import { initializeFirestore, CACHE_SIZE_UNLIMITED, doc, setDoc, getDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -23,6 +23,7 @@ const emailInput = document.getElementById('email');
 const passwordInput = document.getElementById('password');
 const loginButton = document.getElementById('loginButton');
 const signupButton = document.getElementById('signupButton');
+const resetButton = document.getElementById('resetButton');
 const googleContinueButton = document.getElementById('googleContinueButton');
 const message = document.getElementById('message');
 const eyeBox = document.getElementById('eye-box');
@@ -48,7 +49,7 @@ function redirectToHomeIfLoggedIn(user) {
 }
 
 function redirectToLoginIfOnRestrictedArea(user) {
-  const allowedPages = ['/login.html', '/signup.html'];
+  const allowedPages = ['/login.html', '/signup.html','/forgotten.html'];
   if (!user && !allowedPages.includes(lastPath)) {
     window.location.href = 'login.html';
   }
@@ -225,6 +226,24 @@ document.addEventListener('DOMContentLoaded', () => {
     localStorage.removeItem('logoutMessage');
   }
 });
+
+// Reset Password
+if (resetButton) {
+  resetButton.addEventListener('click', () => {
+    const email = emailInput.value;
+    if (email) {
+      sendPasswordResetEmail(auth, email)
+        .then(() => {
+          showErrorMessage('Password reset email sent!', '#28a745');
+        })
+        .catch((error) => {
+          showErrorMessage(error.message, '#ff0000');
+        });
+    } else {
+      showMessage('Please enter your email.', '#ff0000');
+    }
+  });
+}
 
 // Login
 if (loginButton) {
