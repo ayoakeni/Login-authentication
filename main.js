@@ -55,7 +55,7 @@ function redirectToLoginIfOnArestrictedArea(user) {
 }
 
 async function redirectToLoginIfSignedUp(user) {
-  if (user && window.location.pathname === '/signup.html') {
+  if (user && lastPath === '/signup.html') {
     try {
       await signOut(auth);
       setTimeout(() => {
