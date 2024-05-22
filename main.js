@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, sendPasswordResetEmail, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, sendPasswordResetEmail, confirmPasswordReset, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 import { initializeFirestore, CACHE_SIZE_UNLIMITED, doc, setDoc, getDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -18,12 +18,19 @@ const db = initializeFirestore(app, {
   cacheSizeBytes: CACHE_SIZE_UNLIMITED
 });
 
+// Get action code from URL
+const urlParams = new URLSearchParams(window.location.search);
+const actionCode = urlParams.get('oobCode');
+
 // Elements
 const emailInput = document.getElementById('email');
 const passwordInput = document.getElementById('password');
 const loginButton = document.getElementById('loginButton');
 const signupButton = document.getElementById('signupButton');
 const resetButton = document.getElementById('resetButton');
+const newPasswordInput = document.getElementById('newPassword');
+const confirmPasswordInput = document.getElementById('confirmPassword');
+const changePasswordButton = document.getElementById('changePasswordButton');
 const googleContinueButton = document.getElementById('googleContinueButton');
 const message = document.getElementById('message');
 const eyeBox = document.getElementById('eye-box');
@@ -49,7 +56,7 @@ function redirectToHomeIfLoggedIn(user) {
 }
 
 function redirectToLoginIfOnRestrictedArea(user) {
-  const allowedPages = ['/login.html', '/signup.html','/forgotten.html'];
+  const allowedPages = ['/login.html', '/signup.html','/forgotten.html','/change_password.html'];
   if (!user && !allowedPages.includes(lastPath)) {
     window.location.href = 'login.html';
   }
@@ -215,6 +222,16 @@ if (eyeBox) {
       eyeSlash.style.display = 'none';
       eye.style.display = 'inline';
     }
+    // change password
+    if (newPasswordInput.type === 'password') {
+      newPasswordInput.type = 'text';
+      eyeSlash.style.display = 'inline';
+      eye.style.display = 'none';
+    } else {
+      newPasswordInput.type = 'password';
+      eyeSlash.style.display = 'none';
+      eye.style.display = 'inline';
+    }
   });
 }
 
@@ -241,6 +258,41 @@ if (resetButton) {
         });
     } else {
       showMessage('Please enter your email.', '#ff0000');
+    }
+  });
+}
+
+// Change Password
+if (changePasswordButton) {
+  changePasswordButton.addEventListener('click', () => {
+    const newPassword = newPasswordInput.value;
+    const confirmPassword = confirmPasswordInput.value;
+
+    if (newPassword !== confirmPassword) {
+      changePasswordMessage.textContent = 'Passwords do not match.';
+      changePasswordMessage.style.color = '#ff0000';
+      return;
+    }
+
+    if (newPassword.length < 6) {
+      changePasswordMessage.textContent = 'Password should be at least 6 characters.';
+      changePasswordMessage.style.color = '#ff0000';
+      return;
+    }
+
+    if (actionCode) {
+      confirmPasswordReset(auth, actionCode, newPassword)
+        .then(() => {
+          changePasswordMessage.textContent = 'Password has been changed successfully!';
+          changePasswordMessage.style.color = '#28a745';
+        })
+        .catch((error) => {
+          changePasswordMessage.textContent = error.message;
+          changePasswordMessage.style.color = '#ff0000';
+        });
+    } else {
+      changePasswordMessage.textContent = 'Invalid or expired action code.';
+      changePasswordMessage.style.color = '#ff0000';
     }
   });
 }
