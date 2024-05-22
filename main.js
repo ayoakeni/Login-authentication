@@ -77,7 +77,13 @@ onAuthStateChanged(auth, async (user) => {
   if (user) {
     console.log('Logged in');
     if (logIn) showLogInMessage('Login successful!', '#28a745');
-    await fetchUserData(user.uid); // Fetch and display user data here
+    const FuD = await fetchUserData(user.uid); // Fetch and display user data here
+    if (FuD) {
+      await fetchUserData(user.uid);
+    } else {
+      userInfo.textContent = 'No user data found.';
+      if (logIn) showLogInMessage('Unable to fetch your data.', '#ff0000');
+    }
   }
 });
 
@@ -90,10 +96,6 @@ async function fetchUserData(userId) {
     if (userDoc.exists()) {
       const userData = userDoc.data();
       displayUserData(userData);
-    } else {
-      console.log('No such document!');
-      userInfo.textContent = 'No user data found.';
-      if (logIn) showLogInMessage('Unable to fetch your data.', '#ff0000');
     }
   } catch (error) {
     console.error('Error fetching user document:', error);
@@ -103,9 +105,6 @@ async function fetchUserData(userId) {
         if (userDoc.exists()) {
           const userData = userDoc.data();
           displayUserData(userData);
-        } else {
-          console.log('No such document!');
-          userInfo.textContent = 'No user data found.';
         }
       } catch (retryError) {
         console.error('Retry failed:', retryError);
@@ -118,7 +117,7 @@ async function fetchUserData(userId) {
 
 // Display User Data
 function displayUserData(userData) {
-  const userDataElement = userInfo; // Assuming userInfo is the element to display user data
+  const userDataElement = userInfo;
   userDataElement.textContent = `Email: ${userData.email}`;
   if (userData.signupDate) {
     userDataElement.textContent += `, Signup Date: ${new Date(userData.signupDate.seconds * 1000).toLocaleString()}`;
