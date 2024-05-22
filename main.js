@@ -43,7 +43,7 @@ function redirectToHomeIfLoggedIn(user) {
 }
 
 function redirectToLoginIfOnArestrictedArea(user) {
-  const allowedPages = ['/login.html', '/signup.html', '/'];
+  const allowedPages = ['/login.html', '/signup.html'];
   let fullPath = window.location.pathname;
   // Split the path by '/' and get the last part
   let pathParts = fullPath.split('/');
