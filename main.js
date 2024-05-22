@@ -28,7 +28,7 @@ const message = document.getElementById('message');
 const eyeBox = document.getElementById('eye-box');
 const eyeSlash = document.getElementById('eyeSlash');
 const eye = document.getElementById('eye');
-const userData = document.getElementById('userData');
+const userInfo = document.getElementById('userInfo');
 const logoutButton = document.getElementById('logoutButton');
 const errorAuth = document.getElementById('errorAuth');
 const logIn = document.getElementById('logIn');
@@ -89,7 +89,7 @@ async function fetchUserData(userId) {
     userDoc = await getDoc(userDocRef);
     if (userDoc.exists()) {
       const userData = userDoc.data();
-      const userDataElement = document.getElementById('userData');
+      const userDataElement = userInfo;
       userDataElement.textContent = `Email: ${userData.email}`;
       if (userData.signupDate) {
         userDataElement.textContent += `, Signup Date: ${new Date(userData.signupDate.seconds * 1000).toLocaleString()}`;
@@ -99,7 +99,7 @@ async function fetchUserData(userId) {
       }
     } else {
       console.log('No such document!');
-      userData.textContent = 'No user data found.';
+      userInfo.textContent = 'No user data found.';
       if (logIn) showLogInMessage('Unable to fetch your data.', '#ff0000');
     }
   } catch (error) {
@@ -119,7 +119,7 @@ async function fetchUserData(userId) {
           }
         } else {
           console.log('No such document!');
-          userData.textContent = 'No user data found.';
+          userInfo.textContent = 'No user data found.';
         }
       } catch (retryError) {
         console.error('Retry failed:', retryError);
