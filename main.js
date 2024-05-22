@@ -47,7 +47,7 @@ function redirectToHomeIfLoggedIn(user) {
   }
 }
 
-function redirectToLoginIfOnArestrictedArea(user) {
+function redirectToLoginIfOnRestrictedArea(user) {
   const allowedPages = ['/login.html', '/signup.html'];
   if (!user && !allowedPages.includes(lastPath)) {
     window.location.href = 'login.html';
@@ -72,7 +72,7 @@ async function redirectToLoginIfSignedUp(user) {
 onAuthStateChanged(auth, async (user) => {
   redirectToHomeIfLoggedIn(user);
   redirectToLoginIfSignedUp(user);
-  redirectToLoginIfOnArestrictedArea(user);
+  redirectToLoginIfOnRestrictedArea(user);
 
   if (user) {
     console.log('Logged in');
