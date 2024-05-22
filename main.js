@@ -36,20 +36,20 @@ const logOut = document.getElementById('logOut');
 const errBody = document.getElementById('errBody');
 
 // Redirect Functions
+let fullPath = window.location.pathname;
+// Split the path by '/' and get the last part
+let pathParts = fullPath.split('/');
+let lastPath = '/' + pathParts[pathParts.length - 1];
+console.log(lastPath)
+
 function redirectToHomeIfLoggedIn(user) {
-  if (user && window.location.pathname === '/login.html') {
+  if (user && lastPath === '/login.html') {
     window.location.href = 'index.html';
   }
 }
 
 function redirectToLoginIfOnArestrictedArea(user) {
   const allowedPages = ['/login.html', '/signup.html'];
-  let fullPath = window.location.pathname;
-  // Split the path by '/' and get the last part
-  let pathParts = fullPath.split('/');
-  let lastPath = '/' + pathParts[pathParts.length - 1];
-  console.log(lastPath)
-  
   if (!user && !allowedPages.includes(lastPath)) {
     window.location.href = 'login.html';
   }
