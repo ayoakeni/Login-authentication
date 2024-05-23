@@ -154,6 +154,14 @@ window.addEventListener('online', () => {
 // Form Validation
 function validateForm(email, password, name, surname) {
   const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!name) {
+    showMessage('First name is required.', '#ff0000');
+    return false;
+  }
+  if (!surname) {
+    showMessage('Surname is required.', '#ff0000');
+    return false;
+  }
   if (!email) {
     showMessage('Email is required.', '#ff0000');
     return false;
@@ -164,14 +172,6 @@ function validateForm(email, password, name, surname) {
   }
   if (!password) {
     showMessage('Password is required.', '#ff0000');
-    return false;
-  }
-  if (!name) {
-    showMessage('First name is required.', '#ff0000');
-    return false;
-  }
-  if (!surname) {
-    showMessage('Surname is required.', '#ff0000');
     return false;
   }
   return true;
