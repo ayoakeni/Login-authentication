@@ -79,8 +79,8 @@ h2 {
   font-size: 13px;
   cursor: pointer;
 }
-#eyeSlash{
-  display: none;
+.fa-eye-slash{
+  display: none !important;
 }
 .forgot{
   width: 100%;
