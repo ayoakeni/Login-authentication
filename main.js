@@ -106,21 +106,21 @@ async function fetchUserData(userId) {
     }
   } catch (error) {
     console.error('Error fetching user document:', error);
-    if (error.code === 'unavailable') {
-      showLogInMessage('You are offline. Please check your internet connection.', '#ff0000');
-    } else {
-      setTimeout(async () => {
-        try {
-          userDoc = await getDoc(userDocRef);
-          if (userDoc.exists()) {
-            return userDoc.data();
-          }
-        } catch (retryError) {
-          console.error('Retry failed:', retryError);
-          showLogInMessage('Try logging out and logging in again.', '#ff0000');
+    // if (error.code === 'unavailable') {
+    //   showLogInMessage('You are offline. Please check your internet connection.', '#ff0000');
+    // } 
+    setTimeout(async () => {
+      try {
+        userDoc = await getDoc(userDocRef);
+        if (userDoc.exists()) {
+          return userDoc.data();
         }
-      }, 3000);
-    }
+      } catch (retryError) {
+        console.error('Retry failed:', retryError);
+        showLogInMessage('Try logging out and logging in again.', '#ff0000');
+      }
+    }, 3000);
+    // }
   }
   return null;
 }
