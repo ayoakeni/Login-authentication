@@ -152,10 +152,10 @@ window.addEventListener('online', () => {
 });
 
 // Form Validation
-function validateForm(email, password, name, surname, isSignup = false) {
+function validateForm(email, password, name = null, surname = null) {
   const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  
-  if (isSignup) {
+
+  if (signupButton) {
     if (!name) {
       showMessage('First name is required.', '#ff0000');
       return false;
@@ -339,7 +339,6 @@ async function login() {
       lastLogin: serverTimestamp(),
       email: email
     }, { merge: true });
-    showMessage('Login successful!', '#28a745');
   } catch (error) {
     showErrorMessage(error.message, '#ff0000');
   }
