@@ -33,9 +33,10 @@ const confirmPasswordInput = document.getElementById('confirmPassword');
 const changePasswordButton = document.getElementById('changePasswordButton');
 const googleContinueButton = document.getElementById('googleContinueButton');
 const message = document.getElementById('message');
-const eyeBox = document.getElementById('eye-box');
-const eyeSlash = document.getElementById('eyeSlash');
-const eye = document.getElementById('eye');
+const eyebo = document.querySelectorAll('.eye-box');
+const eyeS = document.querySelectorAll('.fa-eye-slash');
+const eyeO = document.querySelectorAll('.fa-eye');
+const passwordInputs = document.querySelectorAll('input[type="password"]');
 const userInfo = document.getElementById('userInfo');
 const logoutButton = document.getElementById('logoutButton');
 const errorAuth = document.getElementById('errorAuth');
@@ -222,8 +223,12 @@ function clearValidationMessage() {
 }
 
 // Password Visibility Toggle
-if (eyeBox) {
-  eyeBox.addEventListener('click', () => {
+eyebo.forEach((eyeb, index) => {
+  eyeb.addEventListener('click', () => {
+    const passwordInput = passwordInputs[index];
+    const eyeSlash = eyeS[index];
+    const eye = eyeO[index];
+
     if (passwordInput.type === 'password') {
       passwordInput.type = 'text';
       eyeSlash.style.display = 'inline';
@@ -233,18 +238,8 @@ if (eyeBox) {
       eyeSlash.style.display = 'none';
       eye.style.display = 'inline';
     }
-    // change password
-    if (newPasswordInput.type === 'password') {
-      newPasswordInput.type = 'text';
-      eyeSlash.style.display = 'inline';
-      eye.style.display = 'none';
-    } else {
-      newPasswordInput.type = 'password';
-      eyeSlash.style.display = 'none';
-      eye.style.display = 'inline';
-    }
   });
-}
+});
 
 // Local Storage for Logout Message
 document.addEventListener('DOMContentLoaded', () => {
