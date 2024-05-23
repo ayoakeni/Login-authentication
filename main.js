@@ -25,6 +25,8 @@ const actionCode = urlParams.get('oobCode');
 // Elements
 const emailInput = document.getElementById('email');
 const passwordInput = document.getElementById('password');
+const nameInput = document.getElementById('name');
+const surnameInput = document.getElementById('surname');
 const loginButton = document.getElementById('loginButton');
 const signupButton = document.getElementById('signupButton');
 const resetButton = document.getElementById('resetButton');
@@ -107,9 +109,6 @@ async function fetchUserData(userId) {
     }
   } catch (error) {
     console.error('Error fetching user document:', error);
-    // if (error.code === 'unavailable') {
-    //   showLogInMessage('You are offline. Please check your internet connection.', '#ff0000');
-    // } 
     setTimeout(async () => {
       try {
         userDoc = await getDoc(userDocRef);
@@ -121,15 +120,20 @@ async function fetchUserData(userId) {
         showLogInMessage('Try logging out and logging in again.', '#ff0000');
       }
     }, 3000);
-    // }
   }
   return null;
 }
+  // if (error.code === 'unavailable') {
+  //   showLogInMessage('You are offline. Please check your internet connection.', '#ff0000');
+  // } 
 
 // Display User Data
 function displayUserData(userData) {
   const userDataElement = userInfo;
   userDataElement.textContent = `Email: ${userData.email}`;
+  if (userData.name) {
+    userDataElement.textContent += `, Name: ${userData.name}`;
+  }
   if (userData.signupDate) {
     userDataElement.textContent += `, Signup Date: ${new Date(userData.signupDate.seconds * 1000).toLocaleString()}`;
   }
@@ -148,7 +152,7 @@ window.addEventListener('online', () => {
 });
 
 // Form Validation
-function validateForm(email, password) {
+function validateForm(email, password, name, surname) {
   const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!email) {
     showMessage('Email is required.', '#ff0000');
@@ -160,6 +164,14 @@ function validateForm(email, password) {
   }
   if (!password) {
     showMessage('Password is required.', '#ff0000');
+    return false;
+  }
+  if (!name) {
+    showMessage('First name is required.', '#ff0000');
+    return false;
+  }
+  if (!surname) {
+    showMessage('Surname is required.', '#ff0000');
     return false;
   }
   return true;
@@ -348,16 +360,22 @@ if (signupButton) {
 async function signup() {
   const email = emailInput.value;
   const password = passwordInput.value;
-  if (!validateForm(email, password)) {
+  const name = nameInput.value;
+  const surname = surnameInput.value;
+
+  if (!validateForm(email, password, name, surname)) {
     return;
   }
+
   try {
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
     showErrorMessage('Sign up successful!', '#28a745');
     const user = userCredential.user;
     await setDoc(doc(db, 'users', user.uid), {
       signupDate: serverTimestamp(),
-      email: email
+      email: email,
+      name: name,
+      surname: surname
     });
   } catch (error) {
     showErrorMessage(error.message, '#ff0000');
@@ -383,7 +401,8 @@ async function googleSignIn() {
     if (!userDoc.exists()) {
       await setDoc(userDocRef, {
         signupDate: serverTimestamp(),
-        email: user.email
+        email: user.email,
+        name: user.displayName // Use displayName from Google account
       });
     }
   } catch (error) {

@@ -48,7 +48,8 @@ h2 {
   flex-direction: column;
   gap: 20px;
 }
-.container input[type="email"] {
+.container input[type="email"],
+input[type="text"] {
   display: block;
   width: 100%;
   height: 43px;
