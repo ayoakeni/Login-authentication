@@ -152,16 +152,20 @@ window.addEventListener('online', () => {
 });
 
 // Form Validation
-function validateForm(email, password, name, surname) {
+function validateForm(email, password, name, surname, isSignup = false) {
   const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!name) {
-    showMessage('First name is required.', '#ff0000');
-    return false;
+  
+  if (isSignup) {
+    if (!name) {
+      showMessage('First name is required.', '#ff0000');
+      return false;
+    }
+    if (!surname) {
+      showMessage('Surname is required.', '#ff0000');
+      return false;
+    }
   }
-  if (!surname) {
-    showMessage('Surname is required.', '#ff0000');
-    return false;
-  }
+
   if (!email) {
     showMessage('Email is required.', '#ff0000');
     return false;
@@ -174,6 +178,7 @@ function validateForm(email, password, name, surname) {
     showMessage('Password is required.', '#ff0000');
     return false;
   }
+
   return true;
 }
 
@@ -322,9 +327,11 @@ if (loginButton) {
 async function login() {
   const email = emailInput.value;
   const password = passwordInput.value;
+
   if (!validateForm(email, password)) {
     return;
   }
+
   try {
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;
@@ -332,6 +339,7 @@ async function login() {
       lastLogin: serverTimestamp(),
       email: email
     }, { merge: true });
+    showMessage('Login successful!', '#28a745');
   } catch (error) {
     showErrorMessage(error.message, '#ff0000');
   }
