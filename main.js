@@ -28,7 +28,7 @@ const passwordInput = document.getElementById('password');
 const nameInput = document.getElementById('name');
 const surnameInput = document.getElementById('surname');
 const loginButton = document.getElementById('loginButton');
-const rememberMe = document.getElementById('rememberMe').checked;
+const rememberMe = document.getElementById('rememberMe');
 const signupButton = document.getElementById('signupButton');
 const resetButton = document.getElementById('resetButton');
 const newPasswordInput = document.getElementById('newPassword');
@@ -325,8 +325,8 @@ window.addEventListener('load', function() {
   const storedEmail = localStorage.getItem('email');
 
   if (rememberMe && storedEmail) {
-    document.getElementById('email').value = storedEmail;
-    document.getElementById('rememberMe').checked = true;
+    emailInput.value = storedEmail;
+    rememberMe.checked = true;
   }
 });
 
@@ -351,9 +351,9 @@ async function login() {
       email: email
     }, { merge: true });
 
-    if (rememberMe) {
+    if (rememberMe.checked) {
       localStorage.setItem('rememberMe', 'true');
-      localStorage.setItem('email', email);
+      localStorage.setItem('email', emailInput);
     } else {
       localStorage.setItem('rememberMe', 'false');
       localStorage.removeItem('email');
