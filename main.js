@@ -28,6 +28,7 @@ const passwordInput = document.getElementById('password');
 const nameInput = document.getElementById('name');
 const surnameInput = document.getElementById('surname');
 const loginButton = document.getElementById('loginButton');
+const rememberMe = document.getElementById('rememberMe').checked;
 const signupButton = document.getElementById('signupButton');
 const resetButton = document.getElementById('resetButton');
 const newPasswordInput = document.getElementById('newPassword');
@@ -318,6 +319,16 @@ if (changePasswordButton) {
     }
   });
 }
+// Remember me checkbox 
+window.addEventListener('load', function() {
+  const rememberMe = localStorage.getItem('rememberMe') === 'true';
+  const storedEmail = localStorage.getItem('email');
+
+  if (rememberMe && storedEmail) {
+    document.getElementById('email').value = storedEmail;
+    document.getElementById('rememberMe').checked = true;
+  }
+});
 
 // Login
 if (loginButton) {
@@ -339,6 +350,14 @@ async function login() {
       lastLogin: serverTimestamp(),
       email: email
     }, { merge: true });
+
+    if (rememberMe) {
+      localStorage.setItem('rememberMe', 'true');
+      localStorage.setItem('email', email);
+    } else {
+      localStorage.setItem('rememberMe', 'false');
+      localStorage.removeItem('email');
+    }
   } catch (error) {
     showErrorMessage(error.message, '#ff0000');
   }

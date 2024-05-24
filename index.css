@@ -84,14 +84,19 @@ input[type="text"] {
 #fa-eye-slash{
   display: none;
 }
-.forgot{
-  width: 100%;
-  margin-bottom: 20px;
-  text-align: center;
+.rem-login{
+  display: flex;
+  gap: 5px;
+  margin-top: 20px;
 }
-.forgot a{
-  color: #28a745;
+.rem-login input{
   cursor: pointer;
+}
+.rem-login label{
+  font-size: 14px;
+  color: #28a745;
+  display: flex;
+  justify-content: space-between;
 }
 .container button {
   width: 100%;
@@ -109,6 +114,15 @@ input[type="text"] {
 .container p{
   text-align: center;
   margin: 20px 0;
+}
+.forgot{
+  width: 100%;
+  margin-bottom: 20px;
+  text-align: center;
+}
+.forgot a{
+  color: #28a745;
+  cursor: pointer;
 }
 .text{
   font-size: 14px;
