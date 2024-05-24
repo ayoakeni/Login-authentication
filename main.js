@@ -1,6 +1,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, sendPasswordResetEmail, confirmPasswordReset, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 import { initializeFirestore, CACHE_SIZE_UNLIMITED, doc, setDoc, getDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBunVgeXF3xLLst1Dhi7sAx9yBCtnqK284",
@@ -17,6 +18,8 @@ const db = initializeFirestore(app, {
   useFetchStreams: false,
   cacheSizeBytes: CACHE_SIZE_UNLIMITED
 });
+const database = getDatabase(app);
+
 
 // Get action code from URL
 const urlParams = new URLSearchParams(window.location.search);
@@ -351,13 +354,13 @@ async function login() {
       email: email
     }, { merge: true });
 
-    if (rememberMe.checked) {
-      localStorage.setItem('rememberMe', 'true');
-      localStorage.setItem('email', emailInput);
-    } else {
-      localStorage.setItem('rememberMe', 'false');
-      localStorage.removeItem('email');
-    }
+if (rememberMe.checked) {
+  localStorage.setItem('rememberMe', 'true');
+  localStorage.setItem('email', emailInput.value);
+} else {
+  localStorage.setItem('rememberMe', 'false');
+  localStorage.removeItem('email');
+}
   } catch (error) {
     showErrorMessage(error.message, '#ff0000');
   }
@@ -394,17 +397,22 @@ async function signup() {
   }
 
   try {
+    showErrorMessage('Creating user...', '#28a745');
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-    showErrorMessage('Sign up successful!', '#28a745');
     const user = userCredential.user;
-    await setDoc(doc(db, 'users', user.uid), {
-      signupDate: serverTimestamp(),
+    showErrorMessage('Sign up successful!', '#28a745');
+
+    // Create user document in Realtime Database
+    await set(ref(database, 'users/' + user.uid), {
+      signupDate: new Date().toISOString(),
       email: email,
       name: name,
       surname: surname
     });
+    console.log('User document created in Realtime Database:', user.uid);
   } catch (error) {
-    showErrorMessage(error.message, '#ff0000');
+    // console.error('Error during signup:', error);
+    showMessage(error.message, '#ff0000');
   }
 }
 
